@@ -15,6 +15,7 @@ routes.post('/users', UserController.create);
 
 routes.get('/timers', TimerController.index);
 routes.post('/timers', TimerController.create);
+routes.put('/timers/:id', TimerController.update);
 routes.delete('/timers/:id', TimerController.delete);
 
 routes.post('/sessions', SessionController.create);
