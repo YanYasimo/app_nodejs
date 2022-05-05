@@ -33,7 +33,7 @@ module.exports = {
             user_id
         });
 
-        return response.json({ id, nameTime, sampleTime, startTime, stopTime, qtdHours, user_id });
+        return response.status(201).json({ id, nameTime, sampleTime, startTime, stopTime, qtdHours, user_id });
     },
 
     async update(request, response) {

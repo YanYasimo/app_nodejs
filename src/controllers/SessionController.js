@@ -16,7 +16,7 @@ module.exports = {
             return response.status(400).json({ "error": 'E-mail or password incorrects.' });
         }
 
-        return response.json(
+        return response.status(200).json(
             {
                 "id" : user.id, 
                 "name" : user.name, 
