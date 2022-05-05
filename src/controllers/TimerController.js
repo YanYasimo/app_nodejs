@@ -21,7 +21,7 @@ module.exports = {
             .first();
 
         if(timers) {
-            return response.status(400).json({ error: 'Timer with this name already exists' });
+            return response.status(400).json({ "error": 'Timer with this name already exists' });
         };
 
         const [id] = await connection('timers').insert({
@@ -33,7 +33,7 @@ module.exports = {
             user_id
         });
 
-        return response.json({ id, nameTime, sampleTime, startTime, stopTime, qtdHours, user_id });
+        return response.status(201).json({ id, nameTime, sampleTime, startTime, stopTime, qtdHours, user_id });
     },
 
     async update(request, response) {
@@ -46,12 +46,12 @@ module.exports = {
             .select('user_id')
             .first();
         if(!timers) {
-            return response.status(400).json({ error: 'Timer not found' });
+            return response.status(400).json({ "error": 'Timer not found' });
         };
 
         if (timers.user_id != user_id){
             return response.status(401).json({ 
-                error: 'Operation not permitted.'
+                "error": 'Operation not permitted.'
             });
         }   
         const count = await connection('timers')
@@ -78,7 +78,7 @@ module.exports = {
 
         if (timers.user_id != user_id){
             return response.status(401).json({ 
-                error: 'Operation not permitted.'
+                "error": 'Operation not permitted.'
             });
         }   
 

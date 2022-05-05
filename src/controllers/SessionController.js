@@ -1,15 +1,27 @@
 const connection = require('../database/connection');
+const bcrypt = require('bcrypt');
 
 module.exports = {
     async create (request, response){
-        const { id } = request.body;
-        
-        const user = await connection('users').where('id', id).select('name').first();
+        const { email, password } = request.body;
+        const user = await connection('users').select('*').where('email', email).first();
 
         if (!user) {
-            return response.status(400).json({ error: 'This ID not correspond with any user' });
+            return response.status(400).json({ "error": 'E-mail or password incorrects.' });
         }
 
-        return response.json(user);
+        const passwordIsValid = await bcrypt.compare(password, user.hashPassword);
+
+        if(!passwordIsValid) {
+            return response.status(400).json({ "error": 'E-mail or password incorrects.' });
+        }
+
+        return response.status(200).json(
+            {
+                "id" : user.id, 
+                "name" : user.name, 
+                "email" : user.email
+            }
+        );
     }
 }
