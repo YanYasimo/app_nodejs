@@ -1,33 +1,36 @@
-const generateUniqueId = require('../utils/generateUniqueID');
-const connection = require('../database/connection');
-const bcrypt = require('bcrypt');
+const User = require('../models/UserModel');
+
+const jwt = require('jsonwebtoken');
+
+function generateTokenJWT(user){
+    const payload = {
+        id: user.id
+    };
+    
+    const token = jwt.sign(payload, process.env.SECRET_JWT);
+    return token;
+}
 
 module.exports = {
-    async index(request, response) {
-        const users = await connection('users').select('*');
-        
+    async list(request, response) {
+        const users = await User.list();
         return response.json(users);
     },
     async create(request, response) {
         const { name, email, password } = request.body;
-        const hashPassword = await bcrypt.hash(password, 10);
-
-        const users = await connection('users').select('*').where('email', email).first();
-
-        if(users) {
-            return response.status(400).json({ "error": 'User already exists' });
-        }
-
-        const id = generateUniqueId();
-    
-        await connection('users').insert({
-            id,
+        const user = new User({
             name,
             email,
-            hashPassword
+            password
         })
-    
-        return response.status(201).json({ id });
+
+        await user.create();
+        response.status(201).json(user.id);
+    },
+    login: (request, response) => {
+        const token = generateTokenJWT(request.user);
+        response.set('Authorization', token);
+        response.status(204).json();
     }
 };
 

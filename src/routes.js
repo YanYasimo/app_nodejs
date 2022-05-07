@@ -1,11 +1,12 @@
 const express = require('express');
 const UserController = require('./controllers/UserController');
 const TimerController = require('./controllers/TimerController');
-const SessionController = require('./controllers/SessionController');
+
+const middleware = require('./middlewares/authentication');
 
 const routes = express.Router();
 
-routes.get('/users', UserController.index);
+routes.get('/users', UserController.list);
 routes.post('/users', UserController.create);
 
 routes.get('/timers', TimerController.index);
@@ -13,6 +14,6 @@ routes.post('/timers', TimerController.create);
 routes.put('/timers/:id', TimerController.update);
 routes.delete('/timers/:id', TimerController.delete);
 
-routes.post('/sessions', SessionController.create);
+routes.post('/login', middleware.local, UserController.login);
 
 module.exports = routes;
