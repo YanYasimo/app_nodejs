@@ -29,6 +29,9 @@ module.exports = {
                 if (error && error.name === "JsonWebTokenError") {
                     return response.status(401).json({ "error": error.message });
                 }
+                if (error && error.name === "TokenExpiredError") {
+                    return response.status(401).json({ "error": error.message, expiredIn: error.expiredAt });
+                }
                 if (error) {
                     return response.status(500).json({ "error": error.message });
                 }
